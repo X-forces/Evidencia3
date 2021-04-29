@@ -1,5 +1,4 @@
 import sys
-import datetime
 import sqlite3
 import datetime
 from sqlite3 import Error
