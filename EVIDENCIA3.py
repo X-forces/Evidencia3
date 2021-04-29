@@ -4,19 +4,20 @@ import sqlite3
 import datetime
 from sqlite3 import Error
 def registrar1(articulos,opcion):
+    
     fecha_registro=input("Dime una fecha (dd/mm/aaaa): ")
     fecha_converter = datetime.datetime.strptime(fecha_registro, "%d/%m/%Y").date()
     fecha_actual = datetime.datetime.combine(fecha_converter, datetime.datetime.min.time())
     try:
         with sqlite3.connect("evidencia3.db") as conn:
             monto_total=0
-            print("Registrar")
+            print("Registrar") 
             contador= max(articulos,default=0)+1
             while opcion!='0':
                 print("Conexión establecida")
                 mi_cursor = conn.cursor()
                 descripcion = input(f"Escribe la descripcion de la venta {contador}: ")
-                cantidad = int(input("Escribe la cantidad a comprarclien del articulo: "))
+                cantidad = int(input("Escribe la cantidad a comprar del articulo: "))
                 precio= float(input(f"Escribe el precio del articulo: "))
                 valores = {"folio": contador, "descripcion":descripcion, "cantidad":cantidad,"precio":precio,"fecha_Registro": fecha_actual}
                 compra = (contador,descripcion.upper(),cantidad,precio,cantidad*precio,fecha_registro)
@@ -66,9 +67,11 @@ def Consultar(articulos):
     return articulos
     
 def LeerFecha_SQL():
+    separador='*'
+    print("\nConsulta de reportes\n")
     while True:
         try:
-            fecha_consultar = input("Dime una fecha (dd/mm/aaaa): ")
+            fecha_consultar = input("Dime la fecha a buscar (dd/mm/aaaa): ")
             fecha_consultar = datetime.datetime.strptime(fecha_consultar, "%d/%m/%Y").date()
             break        
         except:
@@ -79,9 +82,9 @@ def LeerFecha_SQL():
             criterios = {"fecha":fecha_consultar}
             mi_cursor.execute("SELECT v.ID_VENTAS,a.NOMBRE,a.CANTIDAD,a.PRECIO,a.PRECIO*a.CANTIDAD AS TOTA,v.fecha FROM ARTICULOS as a,VENTAS as v WHERE a.ID_VENTAS=v.ID_VENTAS AND DATE(v.FECHA)=:fecha;", criterios)
             registros = mi_cursor.fetchall()
-            print("Registros",registros)
+            print('\n')
             for folio, nombre,cantidad,precio,total,fecha_registro in registros:
-                print(f"folio = {folio}\tDescripcion = {nombre}\tCantidad = {cantidad}\tPrecio={precio}\t total {total}Fecha de registro = {fecha_registro}\n")
+                print(f"folio = {folio}\nDescripcion = {nombre}\n{cantidad}x${precio}={total}\nFecha de registro: {fecha_registro.strftime('%d/%m/%Y')}\n{separador*30}")
     except sqlite3.Error as e:
         print (e)
     except Exception:
@@ -90,6 +93,7 @@ def LeerFecha_SQL():
         if (conn):
             conn.close()
             print("Se ha cerrado la conexión")
+            input("<<ENTER>>")
 
 def Leer_SQL(articulos):
     try:
@@ -98,7 +102,6 @@ def Leer_SQL(articulos):
             mi_cursor.execute("SELECT v.ID_VENTAS,a.NOMBRE,a.CANTIDAD,a.PRECIO,a.PRECIO*a.CANTIDAD AS TOTAL,v.Fecha FROM ARTICULOS as a,VENTAS as v where a.ID_VENTAS=v.ID_VENTAS order by v.ID_ventas")
             registros = mi_cursor.fetchall()
             for registro in registros:
-                print(registro)
                 if registro[0] in articulos:
                     articulos[registro[0]].append(registro)
                 else:
@@ -107,7 +110,6 @@ def Leer_SQL(articulos):
         print (e)
     except:
         print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
-    print(articulos)
     return articulos
 
 articulos={}
@@ -118,12 +120,10 @@ while True:
     print("2-Consultar una venta")
     print("3-Reporte de compras Fechas")
     print("X-Salir ")
-    opcion = input("Elige una opcion")
+    opcion = input("Elige una opcion: ")
     if opcion =='1':
         registrar1(articulos,opcion)
     elif opcion=='2':
-        print("FIN")
-        print(articulos)
         Consultar(articulos)
     elif opcion =='3':
         LeerFecha_SQL()
