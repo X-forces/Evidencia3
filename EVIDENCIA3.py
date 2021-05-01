@@ -3,7 +3,6 @@ import sqlite3
 import datetime
 from sqlite3 import Error
 def registrar1(articulos,opcion):
-    
     fecha_registro=input("Dime una fecha (dd/mm/aaaa): ")
     fecha_converter = datetime.datetime.strptime(fecha_registro, "%d/%m/%Y").date()
     fecha_actual = datetime.datetime.combine(fecha_converter, datetime.datetime.min.time())
@@ -13,7 +12,6 @@ def registrar1(articulos,opcion):
             print("Registrar") 
             contador= max(articulos,default=0)+1
             while opcion!='0':
-                print("Conexión establecida")
                 mi_cursor = conn.cursor()
                 descripcion = input(f"Escribe la descripcion de la venta {contador}: ")
                 cantidad = int(input("Escribe la cantidad a comprar del articulo: "))
@@ -36,7 +34,6 @@ def registrar1(articulos,opcion):
                 print(f"Descripcion: {i[1]}\t {i[2]}X ${i[3]}\tMonto Total: {i[4]}\n")
             print("\nMonto total a pagar: ",monto_total)
             input("<<ENTER>>")
-            
             print("Registro agregado exitosamente")
     except Error as e:
         print (e)
@@ -45,8 +42,6 @@ def registrar1(articulos,opcion):
     finally:
         if (conn):
             conn.close()
-            
-            print("Se ha cerrado la conexión")
 
     return articulos,opcion
 
@@ -91,7 +86,6 @@ def LeerFecha_SQL():
     finally:
         if (conn):
             conn.close()
-            print("Se ha cerrado la conexión")
             input("<<ENTER>>")
 
 def Leer_SQL(articulos):
@@ -114,10 +108,10 @@ def Leer_SQL(articulos):
 articulos={}
 Leer_SQL(articulos)
 while True:
-    print("\n\tMain menu")
+    print("\n\tMenu prinicpal de Cosmeticos")
     print("1-Registrar una venta")
     print("2-Consultar una venta")
-    print("3-Reporte de compras Fechas")
+    print("3-Obtener un reporte de ventas para una Fecha en específico")
     print("X-Salir ")
     opcion = input("Elige una opcion: ")
     if opcion =='1':
